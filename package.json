@@ -1,0 +1,25 @@
+{
+  "name": "laravel-validatejs",
+  "version": "1.0.0",
+  "description": "Lets you reuse Laravel validator rules for client side validations using ValidateJS",
+  "main": "laravelValidateJS.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/shivanikanal1801/laravel-validatejs.git"
+  },
+  "keywords": [
+    "laravel",
+    "rules",
+    "validator",
+    "validatejs"
+  ],
+  "author": "Shivani Kanal <shivani.kanal@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/shivanikanal1801/laravel-validatejs/issues"
+  },
+  "homepage": "https://github.com/shivanikanal1801/laravel-validatejs#readme"
+}
