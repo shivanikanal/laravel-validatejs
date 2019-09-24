@@ -14,7 +14,7 @@ Support: Does not provide support for all laravel validation rules yet
 Basic Usage:
 ```
   <script src="//cdnjs.cloudflare.com/ajax/libs/validate.js/0.13.1/validate.min.js"></script>
-  <script src="//cdn.jsdelivr.net/npm/laravel-validatejs@1.0.0/laravelValidateJS.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/laravel-validatejs@1.0.0/laravelValidateJS.min.js"></script>
   
   var laravelRules = {!! json_encode($validationRules) !!},
   constraints = laravelValidateJS(laravelRules),
