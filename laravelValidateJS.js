@@ -1,12 +1,14 @@
 (function (root, factory) {
     if (typeof define === "function" && define.amd) {
-        define([], factory);
+        define([jQuery], factory);
     } else if (typeof exports === "object") {
-        module.exports = factory();
+        module.exports = factory(jQuery);
     } else {
-        root.laravelValidateJS = factory();
+        root.laravelValidateJS = factory($);
     }
-}(this, function () {
+}(this, function ($) {
+
+    var MIN_MAX_RULE_REGEX = /^(min|max):(\d+)$/;
 
     // if validate js is not loaded log a warning
     if(validate) {
@@ -27,9 +29,50 @@
         }
     };
 
+    // defines the logic used by laravel validator to compute length/size of a value 
+    var getLength = function(value) { 
+        if(typeof value == 'string') {
+            return value;
+        } else if(typeof value == 'number') {
+            return parseInt(value, 10);
+        } else if(value instanceof Array) {
+            return value;
+        } else if((value.name && typeof value.name == 'string') || value instanceof Blob) { // check if field is file or blob
+            return value;
+        }
+        return 0;
+    }
+
     var parseLaravelRule = function(laravelRule) {
         if(laravelRule) {
-            if(predefinedRules[laravelRule]) return predefinedRules[laravelRule];
+            if(predefinedRules[laravelRule]) {return predefinedRules[laravelRule]}
+            else if(MIN_MAX_RULE_REGEX.test(laravelRule)) {
+                return getLengthConstraint(laravelRule);
+            }
+        } 
+        return null;
+    }
+
+    var getLengthConstraint = function(laravelRule) {
+        var matches = MIN_MAX_RULE_REGEX.exec(laravelRule),
+        constraint = matches[1],
+        len = matches[2], value;
+        if(constraint && len) {
+            if(constraint == 'max') {
+                return {
+                    length: {
+                        maximum: parseInt(len, 10),
+                        // tokenizer: getLength
+                    }
+                };
+            } else if (constraint == 'min') {
+                return {
+                    length: {
+                        minimum: parseInt(len, 10),
+                        // tokenizer: getLength
+                    }
+                };
+            }
         }
         return null;
     }
@@ -43,24 +86,14 @@
                     constraints[rule] = {};
                     var rules = laravelRules[rule].split('|');
                     rules.forEach(function(item) {
-                        constraints[rule] = Object.assign(constraints[rule], parseLaravelRule(item));
+                        // constraints[rule] = Object.assign(constraints[rule], parseLaravelRule(item));
+                        constraints[rule] = $.extend(true, {}, constraints[rule], parseLaravelRule(item));
                     });
                 }
             }
         }
         return constraints;
     };
-
-    // defines the logic used by laravel validator to compute length/size of a field 
-    var getLength = function(field) { 
-        if(typeof field == 'string') {
-            return field.length;
-        } else if(typeof field == 'number') {
-            return parseInt(field, 10);
-        } else if(field instanceof Array) {
-            return field.length;
-        }
-    }
 
     return laravelValidateJS;
 }));
